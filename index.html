@@ -11,6 +11,7 @@
       font-family: monospace;
       text-align: center;
       overflow: hidden;
+      user-select: none;
     }
     #start {
       position: fixed;
@@ -76,27 +77,45 @@
       "📲 Only reboot can exit lockdown."
     ];
 
+    function goFullscreen() {
+      const el = document.documentElement;
+      if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if (el.msRequestFullscreen) el.msRequestFullscreen();
+    }
+
+    function trapBackButton() {
+      history.pushState(null, null, location.href);
+      window.onpopstate = function () {
+        history.pushState(null, null, location.href);
+        goFullscreen();
+      };
+    }
+
+    function lockKeys() {
+      document.addEventListener("keydown", (e) => {
+        e.preventDefault(); // block ESC, F11
+      });
+
+      document.addEventListener("gesturestart", e => e.preventDefault());
+      document.addEventListener("touchstart", e => {
+        if (e.touches.length > 1) e.preventDefault(); // block pinch
+      }, { passive: false });
+    }
+
     function triggerPrank() {
       start.style.display = 'none';
       main.style.display = 'flex';
-      requestFullscreen();
+      goFullscreen();
       siren.play();
-
-      history.pushState(null, null, location.href);
-      window.onpopstate = () => history.go(1);
+      trapBackButton();
+      lockKeys();
 
       let i = 0;
       setInterval(() => {
         msg.innerText = messages[i % messages.length];
         i++;
       }, 4000);
-    }
-
-    function requestFullscreen() {
-      const el = document.documentElement;
-      if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
-      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-      else if (el.msRequestFullscreen) el.msRequestFullscreen();
     }
 
     start.addEventListener('click', triggerPrank);

